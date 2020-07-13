@@ -1,4 +1,5 @@
 import React, { useRef, useCallback, useState } from "react";
+import produce from "immer";
 
 const App = () => {
   const nextId = useRef(1);
@@ -12,10 +13,16 @@ const App = () => {
   const onChange = useCallback(
     (e) => {
       const { name, value } = e.target;
-      setForm({
-        ...form,
-        [name]: [value],
-      });
+      // setForm({
+      //   ...form,
+      //   [name]: [value],
+      // });
+      // immer 적용 후
+      setForm(
+        produce(form, (draft) => {
+          draft[name] = value;
+        })
+      );
     },
     [form]
   );
@@ -27,14 +34,20 @@ const App = () => {
       const info = {
         id: nextId.current,
         name: form.name,
-        username: form.usename,
+        username: form.username,
       };
 
       // array에 새 항목 등록
-      setData({
-        ...data,
-        array: data.array.concat(info),
-      });
+      // setData({
+      //   ...data,
+      //   array: data.array.concat(info),
+      // });
+      // immer 적용 후
+      setData(
+        produce(data, (draft) => {
+          draft.array.push(info);
+        })
+      );
 
       // form 초기화
       setForm({
@@ -43,16 +56,25 @@ const App = () => {
       });
       nextId.current += 1;
     },
-    [data, form.name.form.username]
+    [data, form.name, form.username]
   );
 
   // 항목을 삭제하는 함수
-  const onRemove = usecallback(
+  const onRemove = useCallback(
     (id) => {
-      setData({
-        ...data,
-        array: data.array.filter((info) => info.id !== id),
-      });
+      // setData({
+      //   ...data,
+      //   array: data.array.filter((info) => info.id !== id),
+      // });
+      // immer 적용 후
+      setData(
+        produce(data, (draft) => {
+          draft.array.splice(
+            draft.array.findIndex((info) => info.id === id),
+            1
+          );
+        })
+      );
     },
     [data]
   );
