@@ -10,22 +10,25 @@ const App = () => {
   });
 
   // input 수정을 위한 함수
-  const onChange = useCallback(
-    (e) => {
-      const { name, value } = e.target;
-      // setForm({
-      //   ...form,
-      //   [name]: [value],
-      // });
-      // immer 적용 후
-      setForm(
-        produce(form, (draft) => {
-          draft[name] = value;
-        })
-      );
-    },
-    [form]
-  );
+  const onChange = useCallback((e) => {
+    const { name, value } = e.target;
+    // setForm({
+    //   ...form,
+    //   [name]: [value],
+    // });
+    // immer 적용 후
+    // setForm(
+    //   produce(form, (draft) => {
+    //     draft[name] = value;
+    //   })
+    // );
+    // useState와 함께 immer 사용하기
+    setForm(
+      produce((draft) => {
+        draft[name] = value;
+      })
+    );
+  }, []);
 
   // form 등록을 위한 함수
   const onSubmit = useCallback(
@@ -43,8 +46,14 @@ const App = () => {
       //   array: data.array.concat(info),
       // });
       // immer 적용 후
+      // setData(
+      //   produce(data, (draft) => {
+      //     draft.array.push(info);
+      //   })
+      // );
+      // useState와 함께 immer 사용하기
       setData(
-        produce(data, (draft) => {
+        produce((draft) => {
           draft.array.push(info);
         })
       );
@@ -56,28 +65,34 @@ const App = () => {
       });
       nextId.current += 1;
     },
-    [data, form.name, form.username]
+    [form.name, form.username]
   );
 
   // 항목을 삭제하는 함수
-  const onRemove = useCallback(
-    (id) => {
-      // setData({
-      //   ...data,
-      //   array: data.array.filter((info) => info.id !== id),
-      // });
-      // immer 적용 후
-      setData(
-        produce(data, (draft) => {
-          draft.array.splice(
-            draft.array.findIndex((info) => info.id === id),
-            1
-          );
-        })
-      );
-    },
-    [data]
-  );
+  const onRemove = useCallback((id) => {
+    // setData({
+    //   ...data,
+    //   array: data.array.filter((info) => info.id !== id),
+    // });
+    // immer 적용 후
+    // setData(
+    //   produce(data, (draft) => {
+    //     draft.array.splice(
+    //       draft.array.findIndex((info) => info.id === id),
+    //       1
+    //     );
+    //   })
+    // );
+    // useState와 함께 immer 사용하기
+    setData(
+      produce((draft) => {
+        draft.array.splice(
+          draft.array.findIndex((info) => info.id === id),
+          1
+        );
+      })
+    );
+  }, []);
 
   return (
     <div>
